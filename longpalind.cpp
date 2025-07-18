@@ -1,29 +1,41 @@
-#include<bits/stdc++.h>
+#include <iostream>
+#include <string>
 using namespace std;
+
 class Solution {
 public:
-    int longestPalindrome(string s) {
-        unordered_map<char,int> freq;
-for(char ch:s)
-freq[ch]++;
+    string longestPalindrome(string s) {
+        int n = s.size();
+        if (n < 2) return s;
 
-int length=0;
-bool hasodd=false;
+        int start = 0;        
+        int maxLen = 1;       
 
-for(const auto& pair : freq){
-    int count=pair.second;
-    length +=(count/2)*2;
-    if(count %2 == 1) hasodd=true;
-}
-if(hasodd) length +=1;
-return length;
+        auto expandAroundCenter = [&](int left, int right) {
+            while (left >= 0 && right < n && s[left] == s[right]) {
+                int len = right - left + 1;
+                if (len > maxLen) {
+                    start = left;
+                    maxLen = len;
+                }
+                left--;
+                right++;
+            }
+        };
+
+        for (int i = 0; i < n; i++) {
+            expandAroundCenter(i, i);
+            expandAroundCenter(i, i + 1);
+        }
+
+        return s.substr(start, maxLen);
     }
 };
-int main()
-{
-    Solution obj;
-    string s;
-    cin>>s;
-    cout<<obj.longestPalindrome(s)<<endl;
+
+int main() {
+    Solution sol;
+    string input = "babad";
+    string result = sol.longestPalindrome(input);
+    cout << "Longest Palindromic Substring: " << result << endl;
     return 0;
 }
